@@ -19,8 +19,30 @@ def intTryParse(value):
     except ValueError:
         return value, False
 
+def floatTryParse(value):
+    try:
+        return float(value), True
+    except ValueError:
+        return value, False
+
+def stringTryParse(value):
+    try:
+        return str(value), True
+    except ValueError:
+        return value, False
+
+def convertSameTypes(val1, val2):
+    if floatTryParse(val1)[1] and floatTryParse(val2)[1]:
+        return float(val1), float(val2), True
+    if intTryParse(val1)[1] and intTryParse(val2)[1]:
+        return int(val1), int(val2), True
+    if stringTryParse(val1)[1] and stringTryParse(val2)[1]:
+        return str(val1), str(val2), True
+    return val1, val2, False
+
 def comparator(compareType, val1, val2):
-    if (type(val1) == type(val2)):
+    val1, val2, canCompare = convertSameTypes(val1, val2)
+    if canCompare:
         if compareType == "lessThan":
             return val1 < val2
         if compareType == "lessThanEquals":
@@ -39,6 +61,8 @@ def tryFilterColumn(columnNum, worksheet, filterVal, compareType):
         if comparator(compareType, worksheet[i-numRemoved][columnNum], filterVal):
             worksheet.remove(worksheet[i-numRemoved])
             numRemoved += 1;
+        else:
+            print(worksheet[i-numRemoved][columnNum])
     return worksheet
 
 
@@ -107,13 +131,13 @@ while True:
                 break
 
             compareType = columnDict.get(int(cleanOptSelection))
-            print("\nEnter value to filter " + colName)
+            print("\nEnter value to filter " + colName + ":")
 
             filterSelection = input()
 
             worksheet = tryFilterColumn(int(cleanSelection)-1, worksheet, filterSelection, compareType)
             worksheetHistory.append(worksheet);
-            print(worksheet)
+
 
 
         #print("Enter what value you would like to filter by")
