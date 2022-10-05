@@ -6,12 +6,12 @@ def open_workbook(workbookName, sheetNum):
     workbook = xlrd.open_workbook(workbookName)
     a = workbook.sheet_by_index(sheetNum)
 
-    worksheeta = []
+    worksheet = []
     for i in range(0, a.nrows):
-        worksheeta.append([])
+        worksheet.append([])
         for j in range(0, a.ncols):
-            worksheeta[i].append(a.cell_value(i, j))
-    return worksheeta
+            worksheet[i].append(a.cell_value(i, j))
+    return worksheet
 
 def intTryParse(value):
     try:
@@ -19,10 +19,24 @@ def intTryParse(value):
     except ValueError:
         return value, False
 
-def tryFilterColumn(columnNum, worksheet, filterVal):
+def comparator(compareType, val1, val2):
+    if (type(val1) == type(val2)):
+        if compareType == "lessThan":
+            return val1 < val2
+        if compareType == "lessThanEquals":
+            return val1 <= val2
+        if compareType == "greaterThan":
+            return val1 > val2
+        if compareType == "greaterThanEquals":
+            return val1 >= val2
+        if compareType == "equals":
+            return val1 == val2
+    return False
+
+def tryFilterColumn(columnNum, worksheet, filterVal, compareType):
     numRemoved = 0;
     for i in range(1, len(worksheet)):
-        if float(worksheet[i-numRemoved][columnNum]) <= float(filterVal):
+        if comparator(compareType, worksheet[i-numRemoved][columnNum], filterVal):
             worksheet.remove(worksheet[i-numRemoved])
             numRemoved += 1;
     return worksheet
@@ -38,6 +52,7 @@ for i in range(0, data.nrows):
 excelOptions = ["MitC2006data.xlsx", "MitC2012data.xls", "MitC2022data - SalesPopulation.xlsx", "MitC2022data - VacantSales.xlsx"]
 worksheetOptions = ["Linear Regression", "Multivariate Regression", "Clean Data"]
 columnOptions = ["Remove Fields >=", "Remove Fields <=", "Remove fields =", "Remove Fields >", "Remove Fields <"]
+columnDict = {1:"greaterThanEquals", 2:"lessThanEquals", 3:"equals", 4:"greaterThan", 5:"lessThan"}
 
 options = [excelOptions,worksheetOptions,columnOptions]
 
@@ -54,7 +69,6 @@ while True:
         break
 
     worksheet = open_workbook(excelOptions[int(excelSelection)-1], 0)
-    print(type(worksheet))
 
     worksheetHistory.append(worksheet)
 
@@ -92,13 +106,14 @@ while True:
             if not intTryParse(cleanOptSelection)[1] or int(cleanOptSelection) <= 0 or int(cleanOptSelection) > len(columnOptions):
                 break
 
-
+            compareType = columnDict.get(int(cleanOptSelection))
             print("\nEnter value to filter " + colName)
 
             filterSelection = input()
 
-            a = tryFilterColumn(int(cleanSelection)-1, worksheet, filterSelection)
-            print(a)
+            worksheet = tryFilterColumn(int(cleanSelection)-1, worksheet, filterSelection, compareType)
+            worksheetHistory.append(worksheet);
+            print(worksheet)
 
 
         #print("Enter what value you would like to filter by")
