@@ -61,10 +61,43 @@ def tryFilterColumn(columnNum, worksheet, filterVal, compareType):
         if comparator(compareType, worksheet[i-numRemoved][columnNum], filterVal):
             worksheet.remove(worksheet[i-numRemoved])
             numRemoved += 1;
-        else:
-            print(worksheet[i-numRemoved][columnNum])
+        # else:
+            # print(worksheet[i-numRemoved][columnNum])
     return worksheet
 
+def clean_data(worksheet):
+    while True:
+        print("\nWhich column would you like to clean?")
+        for i in range(1, len(worksheet[0])):
+            print(str(i) + ".) " + worksheet[0][i-1])
+
+        cleanSelection = input()
+
+        if not intTryParse(cleanSelection)[1] or int(cleanSelection) <= 0 or int(cleanSelection) > len(worksheet[0]):
+            break
+
+        colName = worksheet[0][int(cleanSelection)-1]
+        print("\nColumn Selected:" + colName)
+
+
+        print("\nHow would you like to clean this column?")
+        for i in range(1, len(columnOptions)+1):
+            print(str(i) + ".) " + columnOptions[i-1])
+
+        cleanOptSelection = input()
+
+        if not intTryParse(cleanOptSelection)[1] or int(cleanOptSelection) <= 0 or int(cleanOptSelection) > len(columnOptions):
+            break
+
+        compareType = columnDict.get(int(cleanOptSelection))
+        print("\nEnter value to filter " + colName + ":")
+
+        filterSelection = input()
+
+        worksheet = tryFilterColumn(int(cleanSelection)-1, worksheet, filterSelection, compareType)
+        worksheetHistory.append(worksheet)
+        break
+    return worksheet;
 
 """
 for i in range(0, data.nrows):
@@ -107,36 +140,9 @@ while True:
         if worksheetSelection != "1" and worksheetSelection != "2" and worksheetSelection != "3":
             break
 
-        while True:
-            print("\nWhich column would you like to clean?")
-            for i in range(1, len(worksheet[0])):
-                print(str(i) + ".) " + worksheet[0][i-1])
+        if worksheetSelection == "3":
+            worksheet = clean_data(worksheet)
 
-            cleanSelection = input()
-
-            if not intTryParse(cleanSelection)[1] or int(cleanSelection) <= 0 or int(cleanSelection) > len(worksheet[0]):
-                break
-
-            colName = worksheet[0][int(cleanSelection)-1]
-            print("\nColumn Selected:" + colName)
-
-
-            print("\nHow would you like to clean this column?")
-            for i in range(1, len(columnOptions)+1):
-                print(str(i) + ".) " + columnOptions[i-1])
-
-            cleanOptSelection = input()
-
-            if not intTryParse(cleanOptSelection)[1] or int(cleanOptSelection) <= 0 or int(cleanOptSelection) > len(columnOptions):
-                break
-
-            compareType = columnDict.get(int(cleanOptSelection))
-            print("\nEnter value to filter " + colName + ":")
-
-            filterSelection = input()
-
-            worksheet = tryFilterColumn(int(cleanSelection)-1, worksheet, filterSelection, compareType)
-            worksheetHistory.append(worksheet);
 
 
 
