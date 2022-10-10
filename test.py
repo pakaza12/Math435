@@ -1,4 +1,8 @@
 import xlrd
+import statsmodels.api as sm
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
 
 # Open the Workbook
 
@@ -11,6 +15,8 @@ def open_workbook(workbookName, sheetNum):
         worksheet.append([])
         for j in range(0, a.ncols):
             worksheet[i].append(a.cell_value(i, j))
+
+    # print(len(worksheet))
     return worksheet
 
 def intTryParse(value):
@@ -90,6 +96,11 @@ def clean_data(worksheet):
             break
 
         compareType = columnDict.get(int(cleanOptSelection))
+
+        if int(cleanOptSelection) == 6:
+            worksheet = tryFilterColumn(int(cleanSelection)-1, worksheet, '', "equals")
+            break
+
         print("\nEnter value to filter " + colName + ":")
 
         filterSelection = input()
@@ -97,6 +108,88 @@ def clean_data(worksheet):
         worksheet = tryFilterColumn(int(cleanSelection)-1, worksheet, filterSelection, compareType)
         worksheetHistory.append(worksheet)
         break
+    return worksheet;
+
+def linear_regression(worksheet):
+    while True:
+        print("\nSelect your first column:")
+        for i in range(1, len(worksheet[0])):
+            print(str(i) + ".) " + worksheet[0][i-1])
+
+        columnSelection1 = input()
+
+        if not intTryParse(columnSelection1)[1] or int(columnSelection1) <= 0 or int(columnSelection1) > len(worksheet[0]):
+            break
+
+        colName1 = worksheet[0][int(columnSelection1)-1]
+
+        print("\nSelect your second column:")
+        for i in range(1, len(worksheet[0])):
+            print(str(i) + ".) " + worksheet[0][i-1])
+
+        columnSelection2 = input()
+
+        if not intTryParse(columnSelection2)[1] or int(columnSelection2) <= 0 or int(columnSelection2) > len(worksheet[0]) or columnSelection1 == columnSelection2:
+            break
+
+        colName2 = worksheet[0][int(columnSelection2)-1]
+
+        yData = []
+        xData = []
+
+        for i in range(1, len(worksheet)):
+            yData.append(worksheet[i][int(columnSelection1)-1])
+            xData.append(worksheet[i][int(columnSelection2)-1])
+
+        # print(colName1 + ": ")
+        # print(yData)
+        # print(colName2 + ": ")
+        # print(xData)
+
+        #  x = sm.add_constant(xData)      # adding a constant
+        #  x = sm.add_constant(xData)
+
+        x = np.array(xData)
+        y = np.array(yData)
+
+        k,d = np.polyfit(x, y, 1)
+        y_pred = k*x+d
+
+        lm = sm.OLS(yData, xData).fit()
+        print()
+        print(lm.summary())
+
+        sns.set_style('darkgrid')        # darkgrid, white grid, dark, white and ticks
+        plt.rc('axes', titlesize=23)     # fontsize of the axes title
+        plt.rc('axes', labelsize=20)     # fontsize of the x and y labels
+        plt.rc('xtick', labelsize=16)    # fontsize of the tick labels
+        plt.rc('ytick', labelsize=16)    # fontsize of the tick labels
+        plt.rc('legend', fontsize=16)    # legend fontsize
+        plt.rc('font', size=16)          # controls default text sizes
+
+        # y_pred = []
+        # for i in range(1, len(worksheet)):
+        #     y_pred.append(lm.predict(xData[i-1])[0])
+
+        # print(y_pred)
+        #  y_pred = 9.1021*x - 34.6706
+
+        # plt.plot(x, y, '.', color='green')
+        # plt.plot(x, y_pred, color='red')
+
+        sns.scatterplot(x=xData, y=yData, color='blue')
+        # sns.lmplot(data=[xData, yData])
+        plt.xlabel(worksheet[0][int(columnSelection2)-1])
+        plt.ylabel(worksheet[0][int(columnSelection1)-1])
+        sns.lineplot(x=xData,y=y_pred, color='red')
+        plt.xlim(0)
+        plt.ylim(0)
+        plt.show()
+
+        print("Equation: y=" + str(k) + "x+" + str(d))
+
+        break
+
     return worksheet;
 
 """
@@ -108,7 +201,7 @@ for i in range(0, data.nrows):
 
 excelOptions = ["MitC2006data.xlsx", "MitC2012data.xls", "MitC2022data - SalesPopulation.xlsx", "MitC2022data - VacantSales.xlsx"]
 worksheetOptions = ["Linear Regression", "Multivariate Regression", "Clean Data"]
-columnOptions = ["Remove Fields >=", "Remove Fields <=", "Remove fields =", "Remove Fields >", "Remove Fields <"]
+columnOptions = ["Remove Fields >=", "Remove Fields <=", "Remove fields =", "Remove Fields >", "Remove Fields <", "Remove Empty"]
 columnDict = {1:"greaterThanEquals", 2:"lessThanEquals", 3:"equals", 4:"greaterThan", 5:"lessThan"}
 
 options = [excelOptions,worksheetOptions,columnOptions]
@@ -143,6 +236,8 @@ while True:
         if worksheetSelection == "3":
             worksheet = clean_data(worksheet)
 
+        if worksheetSelection == "1":
+            linear_regression(worksheet)
 
 
 
