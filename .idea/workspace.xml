@@ -13,10 +13,18 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="372">
-              <caret line="177" column="10" selection-start-line="177" selection-start-column="10" selection-end-line="177" selection-end-column="10" />
+            <state relative-caret-position="392">
+              <caret line="166" column="70" selection-start-line="166" selection-start-column="70" selection-end-line="166" selection-end-column="70" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
+                <element signature="e#164#468#0" />
+                <element signature="e#498#585#0" />
+                <element signature="e#617#706#0" />
+                <element signature="e#739#826#0" />
+                <element signature="e#866#1192#0" />
+                <element signature="e#1239#1692#0" />
+                <element signature="e#1765#2078#0" />
+                <element signature="e#2111#3236#0" />
               </folding>
             </state>
           </provider>
@@ -41,9 +49,10 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" fullScreen="true">
+  <component name="ProjectFrameBounds">
+    <option name="y" value="25" />
     <option name="width" value="1680" />
-    <option name="height" value="1050" />
+    <option name="height" value="934" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -114,23 +123,23 @@
     <configuration />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
+    <frame x="0" y="25" width="1680" height="934" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24954791" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32936507" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.38425925" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Educational.CheckDetails" order="8" />
-      <window_info anchor="bottom" id="Terminal" order="9" weight="0.28174603" />
+      <window_info anchor="bottom" id="Terminal" order="9" weight="0.28125" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Python Console" order="11" />
+      <window_info anchor="bottom" id="Python Console" order="11" weight="0.3298611" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -147,10 +156,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="177" column="10" selection-start-line="177" selection-start-column="10" selection-end-line="177" selection-end-column="10" />
+        <state relative-caret-position="392">
+          <caret line="166" column="70" selection-start-line="166" selection-start-column="70" selection-end-line="166" selection-end-column="70" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#164#468#0" />
+            <element signature="e#498#585#0" />
+            <element signature="e#617#706#0" />
+            <element signature="e#739#826#0" />
+            <element signature="e#866#1192#0" />
+            <element signature="e#1239#1692#0" />
+            <element signature="e#1765#2078#0" />
+            <element signature="e#2111#3236#0" />
           </folding>
         </state>
       </provider>

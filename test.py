@@ -3,6 +3,7 @@ import statsmodels.api as sm
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+import sklearn.linear_model as lm
 
 # Open the Workbook
 
@@ -141,56 +142,54 @@ def linear_regression(worksheet):
             yData.append(worksheet[i][int(columnSelection1)-1])
             xData.append(worksheet[i][int(columnSelection2)-1])
 
-        # print(colName1 + ": ")
-        # print(yData)
-        # print(colName2 + ": ")
-        # print(xData)
+        try:
 
-        #  x = sm.add_constant(xData)      # adding a constant
-        #  x = sm.add_constant(xData)
+            x = np.array(xData).reshape((-1, 1))
+            y = np.array(yData)
 
-        x = np.array(xData)
-        y = np.array(yData)
+            reg = lm.LinearRegression()
+            reg.fit(x, y)
 
-        k,d = np.polyfit(x, y, 1)
-        y_pred = k*x+d
+            y_pred = reg.predict(x)
 
-        lm = sm.OLS(yData, xData).fit()
-        print()
-        print(lm.summary())
+            # Coefficient of determination
+            r_squared = reg.score(x,y)
+            print("R-Squared: " + str(r_squared))
 
-        sns.set_style('darkgrid')        # darkgrid, white grid, dark, white and ticks
-        plt.rc('axes', titlesize=23)     # fontsize of the axes title
-        plt.rc('axes', labelsize=20)     # fontsize of the x and y labels
-        plt.rc('xtick', labelsize=16)    # fontsize of the tick labels
-        plt.rc('ytick', labelsize=16)    # fontsize of the tick labels
-        plt.rc('legend', fontsize=16)    # legend fontsize
-        plt.rc('font', size=16)          # controls default text sizes
+            # slope
+            slope = reg.coef_
+            print("Slope: " + str(slope))
 
-        # y_pred = []
-        # for i in range(1, len(worksheet)):
-        #     y_pred.append(lm.predict(xData[i-1])[0])
+            # intercept
+            intercept = reg.intercept_
+            print("Intercept: " + str(intercept))
 
-        # print(y_pred)
-        #  y_pred = 9.1021*x - 34.6706
+            print("Equation: y=" + str(slope) + "x+" + str(intercept))
 
-        # plt.plot(x, y, '.', color='green')
-        # plt.plot(x, y_pred, color='red')
+            sns.set_style('darkgrid')        # darkgrid, white grid, dark, white and ticks
+            plt.rc('axes', titlesize=23)     # fontsize of the axes title
+            plt.rc('axes', labelsize=20)     # fontsize of the x and y labels
+            plt.rc('xtick', labelsize=16)    # fontsize of the tick labels
+            plt.rc('ytick', labelsize=16)    # fontsize of the tick labels
+            plt.rc('legend', fontsize=16)    # legend fontsize
+            plt.rc('font', size=16)          # controls default text sizes
 
-        sns.scatterplot(x=xData, y=yData, color='blue')
-        # sns.lmplot(data=[xData, yData])
-        plt.xlabel(worksheet[0][int(columnSelection2)-1])
-        plt.ylabel(worksheet[0][int(columnSelection1)-1])
-        sns.lineplot(x=xData,y=y_pred, color='red')
-        plt.xlim(0)
-        plt.ylim(0)
-        plt.show()
 
-        print("Equation: y=" + str(k) + "x+" + str(d))
+            sns.scatterplot(x=xData, y=yData, color='blue')
+            plt.xlabel(worksheet[0][int(columnSelection2)-1])
+            plt.ylabel(worksheet[0][int(columnSelection1)-1])
+            sns.lineplot(x=xData, y=y_pred, color='red')
+            plt.xlim(0)
+            plt.ylim(0)
+            plt.show()
 
-        break
+            break
 
-    return worksheet;
+        except:
+            print("Could not properly compare columns")
+            break
+
+    return
 
 """
 for i in range(0, data.nrows):
