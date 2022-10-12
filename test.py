@@ -113,7 +113,7 @@ def clean_data(worksheet):
 
 def linear_regression(worksheet):
     while True:
-        print("\nSelect your first column:")
+        print("\nSelect your first column (Independent Variable):")
         for i in range(1, len(worksheet[0])):
             print(str(i) + ".) " + worksheet[0][i-1])
 
@@ -124,7 +124,7 @@ def linear_regression(worksheet):
 
         colName1 = worksheet[0][int(columnSelection1)-1]
 
-        print("\nSelect your second column:")
+        print("\nSelect your second column (Dependent Variable):")
         for i in range(1, len(worksheet[0])):
             print(str(i) + ".) " + worksheet[0][i-1])
 
