@@ -1,4 +1,5 @@
 import xlrd
+import random
 import statsmodels.api as sm
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -50,6 +51,10 @@ def convertSameTypes(val1, val2):
 def comparator(compareType, val1, val2):
     val1, val2, canCompare = convertSameTypes(val1, val2)
     if canCompare:
+        if compareType == "contains":
+            return str(val1).__contains__(str(val2))
+        if compareType == "notContain":
+            return not str(val1).__contains__(str(val2))
         if compareType == "lessThan":
             return val1 < val2
         if compareType == "lessThanEquals":
@@ -63,11 +68,12 @@ def comparator(compareType, val1, val2):
     return False
 
 def tryFilterColumn(columnNum, worksheet, filterVal, compareType):
+
     numRemoved = 0;
     for i in range(1, len(worksheet)):
         if comparator(compareType, worksheet[i-numRemoved][columnNum], filterVal):
             worksheet.remove(worksheet[i-numRemoved])
-            numRemoved += 1;
+            numRemoved += 1
         # else:
             # print(worksheet[i-numRemoved][columnNum])
     return worksheet
@@ -176,8 +182,8 @@ def linear_regression(worksheet):
 
 
             sns.scatterplot(x=xData, y=yData, color='blue')
-            plt.xlabel(worksheet[0][int(columnSelection2)-1])
-            plt.ylabel(worksheet[0][int(columnSelection1)-1])
+            plt.xlabel(colName2)
+            plt.ylabel(colName1)
             sns.lineplot(x=xData, y=y_pred, color='red')
             plt.xlim(0)
             plt.ylim(0)
@@ -191,23 +197,127 @@ def linear_regression(worksheet):
 
     return
 
-"""
-for i in range(0, data.nrows):
-    for j in range(0, data.ncols):
-        print(data.cell_value(i, j), end='\t')
-    print('\n')
-"""
+def multiple_linear_regression(worksheet):
+    while True:
+        print("\nSelect your independent variable(s). You can enter multiple by separating them with a comma. Ex: 1,2")
+        for i in range(1, len(worksheet[0])):
+            print(str(i) + ".) " + worksheet[0][i-1])
+
+        columnSelection1 = input()
+
+        if len(columnSelection1.split(",")):
+            columnSelection1 = columnSelection1.split(",")
+        else:
+            columnSelection1 = [columnSelection1]
+
+        # print(columnSelection1)
+
+        isValidInput = True
+        for i in range(0, len(columnSelection1)):
+            if not intTryParse(columnSelection1[i])[1] or int(columnSelection1[i]) <= 0 or int(columnSelection1[i]) > len(worksheet[0]):
+                isValidInput = False
+
+        if not isValidInput:
+            break
+
+        colNames1 = []
+
+        for i in range(0, len(columnSelection1)):
+            colNames1.append(worksheet[0][int(columnSelection1[i])-1])
+
+        print("\nSelect your second column (Dependent Variable):")
+        for i in range(1, len(worksheet[0])):
+            print(str(i) + ".) " + worksheet[0][i-1])
+
+        columnSelection2 = input()
+
+        if not intTryParse(columnSelection2)[1] or int(columnSelection2) <= 0 or int(columnSelection2) > len(worksheet[0]) or columnSelection2 in columnSelection1:
+            break
+
+        colName2 = worksheet[0][int(columnSelection2)-1]
+
+        xData = []
+        yData = []
+        xTest = []
+        yTest = []
+        twentyPercentRows = int((len(worksheet)-1) * 0.02)
+
+
+        for i in range(1, len(worksheet)):
+            xData.append([])
+            for j in range(0, len(columnSelection1)):
+                xData[i-1].append(int(worksheet[i][int(columnSelection1[j])-1]))
+
+        for i in range(1, len(worksheet)):
+            yData.append(int(worksheet[i][int(columnSelection2)-1]))
+
+
+        for i in range(0, twentyPercentRows):
+            xTest.append([])
+            randRange = range(0, len(xData)-1)
+            randRow = random.choice(randRange)
+
+            for j in range(0, len(columnSelection1)):
+                xTest[i].append(xData[randRow][j])
+            xData.remove(xData[randRow])
+
+        for i in range(0, twentyPercentRows):
+            randRange = range(0, len(yData)-1)
+            randRow = random.choice(randRange)
+            yTest.append(yData[randRow])
+            yData.remove(yData[randRow])
+
+        try:
+            print()
+            print("xTest Length: ")
+            print(len(xTest))
+            print("yTest Length: ")
+            print(len(yTest))
+
+            print("xData Length: ")
+            print(len(xData))
+            print("yData Length: ")
+            print(len(yData))
+            print()
+
+            reg = lm.LinearRegression()
+            reg.fit(xData, yData)
+            slope = reg.coef_
+
+            print("slope: ")
+            print(slope)
+            intercept = reg.intercept_
+            print("intercept: ")
+            print(intercept)
+
+            y_pred = reg.predict(xTest)
+
+            # print("y_pred: ")
+            # print(y_pred)
+
+            # Coefficient of determination
+            r_squared = reg.score(xTest, yTest)
+            print("R-Squared: " + str(r_squared))
+
+            break
+
+        except:
+            print("Could not properly compare columns")
+            break
+
+    return
 
 excelOptions = ["MitC2006data.xlsx", "MitC2012data.xls", "MitC2022data - SalesPopulation.xlsx", "MitC2022data - VacantSales.xlsx"]
 worksheetOptions = ["Linear Regression", "Multivariate Regression", "Clean Data"]
-columnOptions = ["Remove Fields >=", "Remove Fields <=", "Remove fields =", "Remove Fields >", "Remove Fields <", "Remove Empty"]
-columnDict = {1:"greaterThanEquals", 2:"lessThanEquals", 3:"equals", 4:"greaterThan", 5:"lessThan"}
+columnOptions = ["Remove Fields >=", "Remove Fields <=", "Remove fields =", "Remove Fields >", "Remove Fields <", "Remove Empty", "Contains", "Doesn't contain"]
+columnDict = {1:"greaterThanEquals", 2:"lessThanEquals", 3:"equals", 4:"greaterThan", 5:"lessThan", 7:"contains", 8:"notContains"}
 
 options = [excelOptions,worksheetOptions,columnOptions]
 
 worksheetHistory = []
 
 while True:
+
     print("What xlsx would you like to work with?")
     for i in range(1, len(excelOptions)+1):
         print(str(i) + ".) " + excelOptions[i-1])
@@ -237,6 +347,9 @@ while True:
 
         if worksheetSelection == "1":
             linear_regression(worksheet)
+
+        if worksheetSelection == "2":
+            multiple_linear_regression(worksheet)
 
 
 

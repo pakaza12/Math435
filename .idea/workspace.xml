@@ -13,18 +13,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
-              <caret line="126" column="53" selection-start-line="126" selection-start-column="53" selection-end-line="126" selection-end-column="53" />
+            <state relative-caret-position="228">
+              <caret line="280" column="19" selection-start-line="280" selection-start-column="19" selection-end-line="280" selection-end-column="19" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
-                <element signature="e#164#468#0" />
-                <element signature="e#498#585#0" />
-                <element signature="e#617#706#0" />
-                <element signature="e#739#826#0" />
-                <element signature="e#866#1192#0" />
-                <element signature="e#1239#1692#0" />
-                <element signature="e#1765#2078#0" />
-                <element signature="e#2111#3236#0" />
+                <element signature="e#551#638#0" />
+                <element signature="e#670#759#0" />
+                <element signature="e#792#879#0" />
+                <element signature="e#919#1245#0" />
+                <element signature="e#1292#1745#0" />
+                <element signature="e#2165#3438#0" />
+                <element signature="e#3478#6072#0" />
               </folding>
             </state>
           </provider>
@@ -123,14 +122,14 @@
     <configuration />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="25" width="1680" height="934" extended-state="0" />
+    <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24954791" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24954791" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.38425925" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32936507" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -156,18 +155,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="126" column="53" selection-start-line="126" selection-start-column="53" selection-end-line="126" selection-end-column="53" />
+        <state relative-caret-position="228">
+          <caret line="280" column="19" selection-start-line="280" selection-start-column="19" selection-end-line="280" selection-end-column="19" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
-            <element signature="e#164#468#0" />
-            <element signature="e#498#585#0" />
-            <element signature="e#617#706#0" />
-            <element signature="e#739#826#0" />
-            <element signature="e#866#1192#0" />
-            <element signature="e#1239#1692#0" />
-            <element signature="e#1765#2078#0" />
-            <element signature="e#2111#3236#0" />
+            <element signature="e#551#638#0" />
+            <element signature="e#670#759#0" />
+            <element signature="e#792#879#0" />
+            <element signature="e#919#1245#0" />
+            <element signature="e#1292#1745#0" />
+            <element signature="e#2165#3438#0" />
+            <element signature="e#3478#6072#0" />
           </folding>
         </state>
       </provider>
