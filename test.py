@@ -5,10 +5,16 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import sklearn.linear_model as lm
+import xlsxwriter
+import string
 
 # Open the Workbook
 
 def open_workbook(workbookName, sheetNum):
+    if workbookName == "Other":
+        print("What file would you like to open?")
+        workbookName = input()
+
     workbook = xlrd.open_workbook(workbookName)
     a = workbook.sheet_by_index(sheetNum)
 
@@ -18,8 +24,28 @@ def open_workbook(workbookName, sheetNum):
         for j in range(0, a.ncols):
             worksheet[i].append(a.cell_value(i, j))
 
-    # print(len(worksheet))
     return worksheet
+
+def save_worksheet(worksheet):
+    print("What would you like to name the file?")
+    worksheetName = input()
+
+    workbook = xlsxwriter.Workbook(worksheetName + '.xlsx')
+
+    sheet = workbook.add_worksheet()
+
+    uppercase_alphabets = list(string.ascii_uppercase)
+
+    for i in range(0, len(worksheet)):
+        for j in range(0, len(worksheet[i])):
+            letter = ""
+            if j > 25:
+                letter = uppercase_alphabets[0] + uppercase_alphabets[j%26] + str(i+1)
+            else:
+                letter = uppercase_alphabets[j] + str(i+1)
+            sheet.write(letter, worksheet[i][j])
+
+    workbook.close()
 
 def intTryParse(value):
     try:
@@ -49,6 +75,8 @@ def convertSameTypes(val1, val2):
     return val1, val2, False
 
 def comparator(compareType, val1, val2):
+    if compareType == "replace":
+        val2 = val2.split(",")[0]
     val1, val2, canCompare = convertSameTypes(val1, val2)
     if canCompare:
         if compareType == "contains":
@@ -65,6 +93,8 @@ def comparator(compareType, val1, val2):
             return val1 >= val2
         if compareType == "equals":
             return val1 == val2
+        if compareType == "replace":
+            return val1 == val2
     return False
 
 def tryFilterColumn(columnNum, worksheet, filterVal, compareType):
@@ -72,8 +102,13 @@ def tryFilterColumn(columnNum, worksheet, filterVal, compareType):
     numRemoved = 0;
     for i in range(1, len(worksheet)):
         if comparator(compareType, worksheet[i-numRemoved][columnNum], filterVal):
-            worksheet.remove(worksheet[i-numRemoved])
-            numRemoved += 1
+            if (compareType != "replace"):
+                worksheet.remove(worksheet[i-numRemoved])
+                numRemoved += 1
+            else:
+                print("before: " + str(worksheet[i-numRemoved][columnNum]))
+                worksheet[i-numRemoved][columnNum] = filterVal.split(",")[1]
+                print("after: " + str(worksheet[i-numRemoved][columnNum]))
         # else:
             # print(worksheet[i-numRemoved][columnNum])
     return worksheet
@@ -81,7 +116,7 @@ def tryFilterColumn(columnNum, worksheet, filterVal, compareType):
 def clean_data(worksheet):
     while True:
         print("\nWhich column would you like to clean?")
-        for i in range(1, len(worksheet[0])):
+        for i in range(1, len(worksheet[0])+1):
             print(str(i) + ".) " + worksheet[0][i-1])
 
         cleanSelection = input()
@@ -120,7 +155,7 @@ def clean_data(worksheet):
 def linear_regression(worksheet):
     while True:
         print("\nSelect your first column (Independent Variable):")
-        for i in range(1, len(worksheet[0])):
+        for i in range(1, len(worksheet[0])+1):
             print(str(i) + ".) " + worksheet[0][i-1])
 
         columnSelection1 = input()
@@ -131,7 +166,7 @@ def linear_regression(worksheet):
         colName1 = worksheet[0][int(columnSelection1)-1]
 
         print("\nSelect your second column (Dependent Variable):")
-        for i in range(1, len(worksheet[0])):
+        for i in range(1, len(worksheet[0])+1):
             print(str(i) + ".) " + worksheet[0][i-1])
 
         columnSelection2 = input()
@@ -144,11 +179,13 @@ def linear_regression(worksheet):
         yData = []
         xData = []
 
-        for i in range(1, len(worksheet)):
-            yData.append(worksheet[i][int(columnSelection1)-1])
-            xData.append(worksheet[i][int(columnSelection2)-1])
-
         try:
+
+            for i in range(1, len(worksheet)):
+                # print("a: " + str(worksheet[i][int(columnSelection1)-1]))
+                # print("b: " + str(worksheet[i][int(columnSelection2)-1]))
+                yData.append(float(worksheet[i][int(columnSelection1)-1]))
+                xData.append(float(worksheet[i][int(columnSelection2)-1]))
 
             x = np.array(xData).reshape((-1, 1))
             y = np.array(yData)
@@ -200,7 +237,7 @@ def linear_regression(worksheet):
 def multiple_linear_regression(worksheet):
     while True:
         print("\nSelect your independent variable(s). You can enter multiple by separating them with a comma. Ex: 1,2")
-        for i in range(1, len(worksheet[0])):
+        for i in range(1, len(worksheet[0])+1):
             print(str(i) + ".) " + worksheet[0][i-1])
 
         columnSelection1 = input()
@@ -226,7 +263,7 @@ def multiple_linear_regression(worksheet):
             colNames1.append(worksheet[0][int(columnSelection1[i])-1])
 
         print("\nSelect your second column (Dependent Variable):")
-        for i in range(1, len(worksheet[0])):
+        for i in range(1, len(worksheet[0])+1):
             print(str(i) + ".) " + worksheet[0][i-1])
 
         columnSelection2 = input()
@@ -242,32 +279,31 @@ def multiple_linear_regression(worksheet):
         yTest = []
         twentyPercentRows = int((len(worksheet)-1) * 0.02)
 
-
-        for i in range(1, len(worksheet)):
-            xData.append([])
-            for j in range(0, len(columnSelection1)):
-                xData[i-1].append(int(worksheet[i][int(columnSelection1[j])-1]))
-
-        for i in range(1, len(worksheet)):
-            yData.append(int(worksheet[i][int(columnSelection2)-1]))
-
-
-        for i in range(0, twentyPercentRows):
-            xTest.append([])
-            randRange = range(0, len(xData)-1)
-            randRow = random.choice(randRange)
-
-            for j in range(0, len(columnSelection1)):
-                xTest[i].append(xData[randRow][j])
-            xData.remove(xData[randRow])
-
-        for i in range(0, twentyPercentRows):
-            randRange = range(0, len(yData)-1)
-            randRow = random.choice(randRange)
-            yTest.append(yData[randRow])
-            yData.remove(yData[randRow])
-
         try:
+            for i in range(1, len(worksheet)):
+                xData.append([])
+                for j in range(0, len(columnSelection1)):
+                    xData[i-1].append(float(worksheet[i][int(columnSelection1[j])-1]))
+
+            for i in range(1, len(worksheet)):
+                yData.append(float(worksheet[i][int(columnSelection2)-1]))
+
+
+            for i in range(0, twentyPercentRows):
+                xTest.append([])
+                randRange = range(0, len(xData)-1)
+                randRow = random.choice(randRange)
+
+                for j in range(0, len(columnSelection1)):
+                    xTest[i].append(xData[randRow][j])
+                xData.remove(xData[randRow])
+
+            for i in range(0, twentyPercentRows):
+                randRange = range(0, len(yData)-1)
+                randRow = random.choice(randRange)
+                yTest.append(yData[randRow])
+                yData.remove(yData[randRow])
+
             print()
             print("xTest Length: ")
             print(len(xTest))
@@ -290,7 +326,7 @@ def multiple_linear_regression(worksheet):
             print("intercept: ")
             print(intercept)
 
-            y_pred = reg.predict(xTest)
+            # y_pred = reg.predict(xTest)
 
             # print("y_pred: ")
             # print(y_pred)
@@ -307,10 +343,10 @@ def multiple_linear_regression(worksheet):
 
     return
 
-excelOptions = ["MitC2006data.xlsx", "MitC2012data.xls", "MitC2022data - SalesPopulation.xlsx", "MitC2022data - VacantSales.xlsx"]
-worksheetOptions = ["Linear Regression", "Multivariate Regression", "Clean Data"]
-columnOptions = ["Remove Fields >=", "Remove Fields <=", "Remove fields =", "Remove Fields >", "Remove Fields <", "Remove Empty", "Contains", "Doesn't contain"]
-columnDict = {1:"greaterThanEquals", 2:"lessThanEquals", 3:"equals", 4:"greaterThan", 5:"lessThan", 7:"contains", 8:"notContains"}
+excelOptions = ["MitC2006data.xlsx", "MitC2012data.xls", "MitC2022data - SalesPopulation.xlsx", "MitC2022data - VacantSales.xlsx", "Other"]
+worksheetOptions = ["Linear Regression", "Multivariate Regression", "Clean Data", "Save as xlsx"]
+columnOptions = ["Remove Fields >=", "Remove Fields <=", "Remove fields =", "Remove Fields >", "Remove Fields <", "Remove Empty", "Contains", "Doesn't contain", "Replace _ with _ (Ex: 1,2 or '',test"]
+columnDict = {1:"greaterThanEquals", 2:"lessThanEquals", 3:"equals", 4:"greaterThan", 5:"lessThan", 7:"contains", 8:"notContains", 9:"replace"}
 
 options = [excelOptions,worksheetOptions,columnOptions]
 
@@ -339,7 +375,7 @@ while True:
 
         worksheetSelection = input()
 
-        if worksheetSelection != "1" and worksheetSelection != "2" and worksheetSelection != "3":
+        if worksheetSelection != "1" and worksheetSelection != "2" and worksheetSelection != "3" and worksheetSelection != "4":
             break
 
         if worksheetSelection == "3":
@@ -350,6 +386,9 @@ while True:
 
         if worksheetSelection == "2":
             multiple_linear_regression(worksheet)
+
+        if worksheetSelection == "4":
+            save_worksheet(worksheet)
 
 
 
