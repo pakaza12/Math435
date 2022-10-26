@@ -13,10 +13,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="380" lean-forward="true" selection-start-line="380" selection-end-line="380" />
+            <state relative-caret-position="840">
+              <caret line="380" selection-start-line="380" selection-end-line="380" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
+                <element signature="e#273#549#0" />
                 <element signature="e#576#1173#0" />
                 <element signature="e#1676#1813#0" />
                 <element signature="e#1795#1934#0" />
@@ -163,10 +164,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="380" lean-forward="true" selection-start-line="380" selection-end-line="380" />
+        <state relative-caret-position="840">
+          <caret line="380" selection-start-line="380" selection-end-line="380" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#273#549#0" />
             <element signature="e#576#1173#0" />
             <element signature="e#1676#1813#0" />
             <element signature="e#1795#1934#0" />
