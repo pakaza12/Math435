@@ -7,6 +7,7 @@ import numpy as np
 import sklearn.linear_model as lm
 import xlsxwriter
 import string
+import datetime
 
 # Open the Workbook
 
@@ -22,7 +23,14 @@ def open_workbook(workbookName, sheetNum):
     for i in range(0, a.nrows):
         worksheet.append([])
         for j in range(0, a.ncols):
-            worksheet[i].append(a.cell_value(i, j))
+            if str(a.cell_value(0, j)).__contains__("Date") and i > 0:
+                dateVal = a.cell_value(i, j)
+                # print(dateVal)
+                date = datetime.datetime(*xlrd.xldate_as_tuple(dateVal, workbook.datemode))
+                # print(date)
+                worksheet[i].append(date.date())
+            else:
+                worksheet[i].append(a.cell_value(i, j))
 
     return worksheet
 
@@ -52,17 +60,23 @@ def intTryParse(value):
         return int(value), True
     except ValueError:
         return value, False
+    except TypeError:
+        return value, False
 
 def floatTryParse(value):
     try:
         return float(value), True
     except ValueError:
         return value, False
+    except TypeError:
+        return value, False
 
 def stringTryParse(value):
     try:
         return str(value), True
     except ValueError:
+        return value, False
+    except TypeError:
         return value, False
 
 def convertSameTypes(val1, val2):
@@ -81,7 +95,7 @@ def comparator(compareType, val1, val2):
     if canCompare:
         if compareType == "contains":
             return str(val1).__contains__(str(val2))
-        if compareType == "notContain":
+        if compareType == "notContains":
             return not str(val1).__contains__(str(val2))
         if compareType == "lessThan":
             return val1 < val2
@@ -106,11 +120,14 @@ def tryFilterColumn(columnNum, worksheet, filterVal, compareType):
                 worksheet.remove(worksheet[i-numRemoved])
                 numRemoved += 1
             else:
-                print("before: " + str(worksheet[i-numRemoved][columnNum]))
+                # print("before: " + str(worksheet[i-numRemoved][columnNum]))
                 worksheet[i-numRemoved][columnNum] = filterVal.split(",")[1]
-                print("after: " + str(worksheet[i-numRemoved][columnNum]))
+                # print("after: " + str(worksheet[i-numRemoved][columnNum]))
         # else:
             # print(worksheet[i-numRemoved][columnNum])
+
+    print("Number of Rows Removed: " + str(numRemoved))
+
     return worksheet
 
 def clean_data(worksheet):
@@ -196,7 +213,7 @@ def linear_regression(worksheet):
             y_pred = reg.predict(x)
 
             # Coefficient of determination
-            r_squared = reg.score(x,y)
+            r_squared = reg.score(x, y)
             print("R-Squared: " + str(r_squared))
 
             # slope
@@ -277,7 +294,7 @@ def multiple_linear_regression(worksheet):
         yData = []
         xTest = []
         yTest = []
-        twentyPercentRows = int((len(worksheet)-1) * 0.02)
+        twentyPercentRows = int((len(worksheet)-1) * 0.2)
 
         try:
             for i in range(1, len(worksheet)):
@@ -294,15 +311,12 @@ def multiple_linear_regression(worksheet):
                 randRange = range(0, len(xData)-1)
                 randRow = random.choice(randRange)
 
+                yTest.append(yData[randRow])
+                yData.remove(yData[randRow])
+
                 for j in range(0, len(columnSelection1)):
                     xTest[i].append(xData[randRow][j])
                 xData.remove(xData[randRow])
-
-            for i in range(0, twentyPercentRows):
-                randRange = range(0, len(yData)-1)
-                randRow = random.choice(randRange)
-                yTest.append(yData[randRow])
-                yData.remove(yData[randRow])
 
             print()
             print("xTest Length: ")
