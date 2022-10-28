@@ -55,6 +55,39 @@ def save_worksheet(worksheet):
 
     workbook.close()
 
+def split_excel_files(worksheet):
+    twentyPercentRows = int((len(worksheet)-1) * 0.2)
+
+    copyWorksheet = []
+
+    for i in range(0, len(worksheet)):
+        copyWorksheet.append([])
+        for j in range(0, len(worksheet[i])):
+            copyWorksheet[i].append(worksheet[i][j])
+
+    twentyPercent = [[]]
+    for j in range(0, len(worksheet[0])):
+            twentyPercent[0].append(worksheet[0][j])
+
+    for i in range(1, twentyPercentRows+1):
+        twentyPercent.append([])
+        randRange = range(1, len(copyWorksheet)-1)
+        randRow = random.choice(randRange)
+
+        for j in range(0, len(worksheet[i])):
+            twentyPercent[i].append(copyWorksheet[randRow][j])
+
+        copyWorksheet.remove(copyWorksheet[randRow])
+
+    print()
+    print("Eighty Percent Data: ")
+    save_worksheet(copyWorksheet)
+    print()
+    print("Twenty Percent Data: ")
+    save_worksheet(twentyPercent)
+
+    return
+
 def intTryParse(value):
     try:
         return int(value), True
@@ -358,7 +391,7 @@ def multiple_linear_regression(worksheet):
     return
 
 excelOptions = ["MitC2006data.xlsx", "MitC2012data.xls", "MitC2022data - SalesPopulation.xlsx", "MitC2022data - VacantSales.xlsx", "Other"]
-worksheetOptions = ["Linear Regression", "Multivariate Regression", "Clean Data", "Save as xlsx"]
+worksheetOptions = ["Linear Regression", "Multivariate Regression", "Clean Data", "Save as xlsx", "Split Data 80/20"]
 columnOptions = ["Remove Fields >=", "Remove Fields <=", "Remove fields =", "Remove Fields >", "Remove Fields <", "Remove Empty", "Contains", "Doesn't contain", "Replace _ with _ (Ex: 1,2 or '',test"]
 columnDict = {1:"greaterThanEquals", 2:"lessThanEquals", 3:"equals", 4:"greaterThan", 5:"lessThan", 7:"contains", 8:"notContains", 9:"replace"}
 
@@ -389,7 +422,7 @@ while True:
 
         worksheetSelection = input()
 
-        if worksheetSelection != "1" and worksheetSelection != "2" and worksheetSelection != "3" and worksheetSelection != "4":
+        if worksheetSelection != "1" and worksheetSelection != "2" and worksheetSelection != "3" and worksheetSelection != "4" and worksheetSelection != "5":
             break
 
         if worksheetSelection == "3":
@@ -403,6 +436,9 @@ while True:
 
         if worksheetSelection == "4":
             save_worksheet(worksheet)
+
+        if worksheetSelection == "5":
+            split_excel_files(worksheet)
 
 
 
