@@ -9,10 +9,7 @@ valid_sales = sales_data[sales_data["SaleValidity"] <= 2]
 def single_var_mean():
     col_name = input('What column would you like to analyze? ')
     current_var = valid_sales[col_name]
-    if(col_name=='Price'):
-        yr = input('What year to limit the data? ')
-
-    
+        
     
 
     #current_var = current_var.loc[(current_var != 0).any(axis=1)] removing 0s?
@@ -38,10 +35,10 @@ def single_var_mean():
     print('95% confidence of mean:', confidence)
 
 def single_var_median(ci, p): # https://github.com/minddrummer/median-confidence-interval/blob/master/Median_CI.py
-    
     col_name = input('What column would you like to analyze? ')
     data = valid_sales[col_name]
-	
+    median = np.median(data)
+
     if type(data) is pd.Series or type(data) is pd.DataFrame:
 	# 	#transfer data into np.array
         data = data.values
@@ -58,7 +55,7 @@ def single_var_median(ci, p): # https://github.com/minddrummer/median-confidence
     lowCount -= 1
     confidence = (data[int(lowCount)], data[int(upCount)])
 	# print lowCount, upCount
-    print('95% confidence: ', confidence)
+    print('95% confidence: ', confidence, 'median:', median)
 
 stat = input('Which statistic would you like to analyze (mean or median)? ')
 if stat=='mean':
