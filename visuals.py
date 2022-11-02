@@ -26,17 +26,18 @@ p = scipy.stats.norm.pdf(xs, a_mu, a_std)
 
 sns.displot(data=sales_data, x='Price', kde=True, bins=50, color = "green")
 plt.axvline(x=mn+(2*sd),color="steelblue", linestyle="dashed")
-plt.axvline(x=0,color="steelblue", linestyle="dashed")
+plt.axvline(x=min(valid_price),color="steelblue", linestyle="dashed")
 
 plt.xlabel('Price (in millions)')
 plt.ylabel('Number of homes')
 plt.title('Price Distribution')
+plt.xlim(0, 1.5e6)
+
 plt.show()
 
 """ plt.hist(valid_price, bins=30, color = "green", edgecolor="black")
 
 plt.plot(xs, p)
-#plt.xlim(0, 1.5e6)
 
 plt.show() """
 
