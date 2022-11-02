@@ -38,6 +38,8 @@ def single_var_median(ci, p): # https://github.com/minddrummer/median-confidence
     col_name = input('What column would you like to analyze? ')
     data = valid_sales[col_name]
     median = np.median(data)
+    if col_name == 'FND':
+        print('median', (data[17552] + data[17553]) / 2)
 
     if type(data) is pd.Series or type(data) is pd.DataFrame:
 	# 	#transfer data into np.array

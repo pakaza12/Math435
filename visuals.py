@@ -16,3 +16,4 @@ plt.xlabel("Land Value")
 plt.show()
 
 valid_price = valid_sales["Price"]
+
